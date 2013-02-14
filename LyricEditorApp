@@ -1,0 +1,409 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.filechooser.*;
+import javax.swing.colorchooser.*;
+import java.io.*;
+import java.io.IOException.*;
+import java.io.BufferedReader.*;
+import java.io.FileReader.*;
+import java.io.BufferedWriter.*;
+import java.io.FileWriter.*;
+import java.util.StringTokenizer;
+
+/** Packages imported from Java.Sun.com/API **/
+
+/** classes used for application **/
+
+public class SongApp extends JFrame implements ActionListener
+{
+  private JEditorPane content; 
+  private JEditorPane ctt;
+  private JButton openF;
+  private JButton appC;
+  private JMenuItem open;
+  private JMenuItem winn;
+  private JMenuItem brks;
+  private JMenuItem saveas;
+  private JMenuItem cuts;
+  private JMenuItem copies;
+  private JMenuItem pasted;
+  private JMenuItem select;
+  private JMenuItem brk;
+  private JMenuItem find;
+  private JMenuItem replace;
+  private JMenuItem hlp;
+  private JMenuItem abt;
+  private JMenuItem tkn;
+  private JMenuItem sopt;
+  private JColorChooser userC;
+  private JLabel colorF;
+  private JButton chp;
+  private JButton editL;
+  private JButton changeF;
+  private JFileChooser fc;
+  private JFileChooser ffc;
+  private JTabbedPane tabbedpane;
+  
+  private FontChooser2 fz;
+  private Font resultFont;
+  private String resultName;
+  private int resultSize;
+  private boolean isBold;
+  private boolean isItalic;
+  private String displayText = "Qwerty";
+  private String fontList[];
+  private List fontNameChoice;
+  private List fontSizeChoice;
+  private Checkbox bold, italic;
+  private String fontSizes[] = { "8", "10", "11", "12", "14", "16", "18",
+      "20", "24", "30", "36", "40", "48", "60", "72" };
+  private static final int DEFAULT_SIZE = 4;
+  private JLabel previewArea;
+  
+  /** main application constructor **/
+  
+  public SongApp()
+  {
+      super("Song Lyric Editor");
+
+      /* application layout & container */
+      
+      setLayout(new GraphPaperLayout(new Dimension(5, 5)));
+      Container txtE = getContentPane();
+      
+      /* menu bar with menu items */
+      
+      JMenuBar mainPanel = new JMenuBar();
+      JMenu file = new JMenu("File");
+      JMenu edit = new JMenu("Edit");
+      JMenu option = new JMenu("Options");
+      JMenu help = new JMenu("Help");
+      
+      /* menu items for the file menu */
+      
+      winn = new JMenuItem("New Tab               Ctrl+N");
+      winn.addActionListener(this);
+      open = new JMenuItem("Open File              Ctrl+O");
+      open.addActionListener(this);
+      brks = new JMenuItem("--------------------------------");
+      brks.addActionListener(this);
+      JMenuItem save = new JMenuItem("Save File               Ctrl+S");
+      save.addActionListener(this);
+      saveas = new JMenuItem("Save As......");
+      saveas.addActionListener(this);
+      JMenuItem product = new JMenuItem("Close                     Alt+F4");
+      
+      /* menu items for the edit menu */
+      
+      cuts = new JMenuItem("Cut                   Ctrl+X");
+      cuts.addActionListener(this);
+      copies = new JMenuItem("Copy                Ctrl+C");
+      copies.addActionListener(this);
+      pasted = new JMenuItem("Paste               Ctrl+V");
+      pasted.addActionListener(this);
+      select = new JMenuItem("Select All        Ctrl+A");
+      select.addActionListener(this);
+      brk = new JMenuItem("----------------------------");
+      brk.addActionListener(this);
+      find = new JMenuItem("Find                  Ctrl+F");
+      find.addActionListener(this);
+      replace = new JMenuItem("Replace          Ctrl+R");
+      replace.addActionListener(this);
+      
+      /* menu item options added to edit */
+      
+      edit.add(cuts);
+      edit.add(copies);
+      edit.add(pasted);
+      edit.add(select);
+      edit.add(brk);
+      edit.add(find);
+      edit.add(replace);
+      
+      /* to turn your text into string tokens which breaks down 
+       * each element of a pharse 
+       */
+      
+      tkn = new JMenuItem("Text into Tokens");
+      tkn.addActionListener(this);
+      sopt = new JMenuItem("Set Language");
+      sopt.addActionListener(this);
+      
+      option.add(tkn);
+      option.add(sopt);
+      
+      /* menu items added to menu help */
+      
+      hlp = new JMenuItem("Help Me");
+      hlp.addActionListener(this);
+      abt = new JMenuItem("About...");
+      abt.addActionListener(this);
+      
+      help.add(hlp);
+      help.add(abt);
+      
+      /* buttons for the application */
+      
+      openF = new JButton("Open Lyrics"); 
+      openF.addActionListener(this);
+      editL = new JButton("Edit Lyrics");
+      editL.addActionListener(this);
+      changeF = new JButton("Change Font");
+      changeF.addActionListener(this);
+      appC = new JButton("Application colour");
+      appC.addActionListener(this);
+      chp = new JButton("Change Pharse");
+      chp.addActionListener(this);
+      
+      /* menus for the menu bar */
+      
+      setJMenuBar(mainPanel);
+      mainPanel.add(file);
+      mainPanel.add(edit);
+      mainPanel.add(option);
+      mainPanel.add(help);
+      
+      /* menu item options added to file */
+      
+      file.add(winn);
+      file.add(open);
+      file.add(brks);
+      file.add(save);
+      file.add(saveas);
+      file.add(product);
+      product.addActionListener
+      (
+       new ActionListener()
+       {
+          public void actionPerformed(ActionEvent e)
+          {
+            System.exit(0);
+          }
+       }
+    );
+    
+    /* application editor */
+    
+    content = new JEditorPane();
+    content.setEditable (false);
+    
+    /* application tabs added to editor */
+    
+    tabbedpane = new JTabbedPane();
+    
+    txtE.add(tabbedpane, new Rectangle(0, 0, 5,4));
+    tabbedpane.addTab("Song Lyrics", new JScrollPane(content));
+    
+    /* button positon in the container
+     *  showing shape & size of buttons
+     */           
+    
+    txtE.add(openF, new Rectangle(0, 4, 1, 1));
+    txtE.add(editL, new Rectangle(1, 4, 1, 1));
+    txtE.add(changeF, new Rectangle(2, 4, 1, 1));
+    txtE.add(appC, new Rectangle(3, 4, 1, 1));
+    txtE.add(chp, new Rectangle(4, 4, 1, 1));
+    
+    setSize ( 700, 375);
+    setVisible(true);
+    
+  }
+
+    /** defining the main constructor of the application **/
+
+    public static void main (String args[])
+  
+    {
+      SongApp app = new SongApp();
+    }
+  
+    /** showing action method for each button to be performed when clicked on **/
+  
+    public void actionPerformed(ActionEvent e) {
+        /* Open file button action */
+        if (e.getSource() == openF || e.getSource() == fc || e.getSource()== open)
+          {
+            JFileChooser fc = new JFileChooser();
+            int returnVal = fc.showOpenDialog(this);     
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("xml", "lyr", "txt");
+            fc.setFileFilter(filter);
+      
+            if(returnVal == JFileChooser.APPROVE_OPTION)
+              fc.getSelectedFile().getName();
+              File file = fc.getSelectedFile();
+          
+           /* This is where a the application opens the lyric file */
+           /** reading in the file with a bufferedreader and filereader **/
+          
+            String rec = null;
+            String allText = null;
+           try {
+                
+                BufferedReader bf = new BufferedReader(new FileReader("../Jodeci.txt"));
+                rec = new String();
+                allText = new String();
+                while ((rec = bf.readLine()) != null) {
+                      allText += rec + "\n";
+                }
+                bf.close();
+                content.setText(allText);
+                ctt.setText(allText);
+            } catch (IOException ie) {
+                ie.printStackTrace();
+                }
+        }
+    
+      if (e.getSource() == saveas || e.getSource() == ffc)
+          {
+             JFileChooser ffc = new JFileChooser();
+            int returnVal = ffc.showSaveDialog(this);     
+      
+            if(returnVal == JFileChooser.APPROVE_OPTION)
+              ffc.getSelectedFile().getName();
+              File fle = ffc.getSelectedFile();
+          
+           /* This is where a the application saves the lyric file */
+           /** writing out the file to chosen file name from user
+            *  using bufferedwriter and filewriter
+            **/                         
+             String text = content.getText();
+          try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(fle + ".lyr"));
+                text = new String();
+                bw.write(text + "\n");
+                bw.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                }
+          }
+        
+        /* selecting edit lyrics button allows you to edit the text editor*/                  
+        
+         if (e.getSource() == editL)
+         {
+          content.setEditable (true);
+         }
+        
+        /** string token allows you to break up text and sperate into
+         *  each word for a specified string
+         */                   
+        
+        if (e.getSource() == tkn)
+        {
+         String tetk = content.getText();
+          StringTokenizer st = new StringTokenizer(tetk);
+   
+          /* inherit st object to view more tokens for strings */
+          while (st.hasMoreElements())
+            {
+              String token = st.nextElement().toString();
+              content.setText("token = " + token);
+            }
+        }
+      
+          /** action performed for choosing application colour **/
+       
+          if (e.getSource() == appC) 
+        {
+            Color initialColor = Color.white;
+    
+          /* Show the dialog; this method does not return until the dialog is closed */
+          
+          Color newC = JColorChooser.showDialog(this, "Choose an Application Color", initialColor);
+          appC.setBackground(newC);
+          appC.setForeground(newC.black);
+          editL.setBackground(newC);
+          editL.setForeground(newC.black);
+          changeF.setBackground(newC);
+          changeF.setForeground(newC.black);
+          openF.setBackground(newC);
+          openF.setForeground(newC.black);
+          chp.setBackground(newC);
+          chp.setForeground(newC.black);
+          content.setBackground(newC);
+          content.setForeground(newC.black);
+          this.setBackground(newC);
+          
+            /* Creating a new Jframe for application color */ 
+                        
+            JFrame frme = new JFrame("Application Color Chooser");
+            frme.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+            JComponent newContentPane = new color();
+            newContentPane.setOpaque(true); 
+            frme.setContentPane(newContentPane);
+    
+            /*   Displaying the farme */ 
+                        
+            frme.pack();
+            frme.setVisible(false);
+        }
+      
+          /** adding a new editor in a new tab **/
+      
+          if (e.getSource() == winn)
+        {
+        /* naming new editor with scrollpane
+         *  when opened new tab, opens 1 tab at a time         
+         */
+        
+        JEditorPane ctt = new JEditorPane();
+        ctt.setEditable (true);
+        tabbedpane.addTab("Next Song Lyrics ", new JScrollPane(ctt));
+        tabbedpane.setSelectedIndex(1);
+        }
+    
+        /** this method allows you change the font in the editor **/
+    
+         if (e.getSource() == changeF)
+        {
+              JFrame f = new JFrame("Font Chooser");
+              FontChooser2 fz = new FontChooser2(f);
+              Container cp = getContentPane();
+              
+              fz.setVisible(true);
+              
+              /* method for selected font for the lyrics in the editor */
+              final Font myNewFont = fz.getSelectedFont();
+              System.out.println("You chose " + myNewFont);
+              content.setFont(myNewFont);
+              ctt.setFont(myNewFont);
+              f.pack(); 
+              fz.dispose();
+      
+              Panel bot = new Panel();
+    /* applies selected font, size etc to text in the editor when clicked on apply */
+              JButton okButton = new JButton("Apply");
+              bot.add(okButton);
+              okButton.addActionListener(new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+              dispose();
+              setVisible(false);
+            }
+          });
+      
+              JButton canButton = new JButton("Cancel");
+              bot.add(canButton);
+              canButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                  /* Set all values to null. Better: restore previous */
+                  resultFont = null;
+                  resultName = null;
+                  resultSize = 0;
+                  isBold = false;
+                  isItalic = false;
+          
+                  dispose();
+                  setVisible(false);
+            }
+          });
+      
+          cp.add(bot, BorderLayout.SOUTH);
+      
+          pack();
+          setLocation(100, 100);
+        }
+          
+      }
+    } /* end of main */   
