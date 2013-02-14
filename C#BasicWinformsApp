@@ -1,0 +1,138 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace TalkUserApp
+{
+    public partial class Talktech : Form
+    {
+
+  public Talktech()
+	{
+		InitializeComponent();
+		FormButtons();
+	}
+
+        private void FormButtons()
+        {
+		//Creates Labels
+		Label newitemlbl = new Label();
+		Label itemlistlbl = new Label();
+
+		newitemlbl.Name = "newitemlbl";
+		newitemlbl.Text = "New Item";
+		newitemlbl.Location = new Point(15, 30);
+
+		itemlistlbl.Name = "itemlistlbl";
+		itemlistlbl.Text = "Item List";
+		itemlistlbl.Location = new Point(35, 30);
+
+		//Creates Textboxes
+
+		TextBox userText = new TextBox();
+		TextBox resultText = new TextBox(); 
+		
+		userText.Name = "userText";
+		userText.Location = new Point(20, 30);
+
+		resultText.Name = "nitem";
+		resultText.Width = 12;
+		resultText.Height = 21;
+		resultText.Location = new Point(40, 30);  
+
+         	// Creates a Button object 
+    		Button addbtn = new Button();
+		Button sortnamebtn = new Button();
+		Button sortvaluebtn = new Button();
+		Button deletebtn = new Button();
+ 
+    		// Set addbtn properties
+    		addbtn.Height = 25;
+    		addbtn.Width = 45;
+    		addbtn.ForeColor = Color.Blue;
+    		addbtn.Location = new Point(10, 40);
+    		addbtn.Text = "Add";
+    		addbtn.Font = new Font("Arial", 12);	
+
+		// Set sortnamebtn properties
+    		sortnamebtn.Height = 25;
+    		sortnamebtn.Width = 45;
+    		sortnamebtn.ForeColor = Color.Blue;
+    		sortnamebtn.Location = new Point(20, 40);
+    		sortnamebtn.Text = "Sort by Name";
+    		sortnamebtn.Font = new Font("Arial", 12);
+
+		// Set sortvaluebtn properties
+    		sortvaluebtn.Height = 25;
+    		sortvaluebtn.Width = 45;
+    		sortvaluebtn.ForeColor = Color.Blue;
+    		sortvaluebtn.Location = new Point(25, 40);
+    		sortvaluebtn.Text = "Sort by Value";
+    		sortvaluebtn.Font = new Font("Arial", 12);
+		
+		// Set deletebtn properties
+    		deletebtn.Height = 25;
+    		deletebtn.Width = 45;
+    		deletebtn.ForeColor = Color.Blue;
+    		deletebtn.Location = new Point(30, 40);
+    		deletebtn.Text = "Delete";
+    		deletebtn.Font = new Font("Arial", 12); 	
+
+		// Button Click Event handler
+    		addbtn.Click += new EventHandler(addbtn_Click);	
+		
+		// Button Click Event handler
+    		sortnamebtn.Click += new EventHandler(sortnamebtn_Click);
+		
+		// Button Click Event handler
+    		sortvaluebtn.Click += new EventHandler(sortvaluebtn_Click);	
+
+		// Button Click Event handler
+    		deletebtn.Click += new EventHandler(deletebtn_Click);
+
+		// Add Buttons to the Form
+		this.Controls.Add(addbtn);
+		this.Controls.Add(sortnamebtn); 
+		this.Controls.Add(sortvaluebtn); 
+		this.Controls.Add(deletebtn);
+		this.Controls.Add(newitemlbl);
+		this.Controls.Add(itemlistlbl); 
+		this.Controls.Add(userText); 
+		this.Controls.Add(resultText);    
+        }
+		// Event handler method for buttons
+		private void addbtn_Click(object sender, EventArgs e)
+       		{
+            		resultText.Text = userText.Text;
+
+			If (((e.Key < Key.NumPad0)||(e.Key > Key.NumPad9))&&((e.Key < Key.A)||(e.Key > Key.Z)))
+  			{
+    				e.Handled = true;
+			Else 	MsgBox("Alpha-numeric characters only", MsgBoxStyle.Critical) 
+
+			End If
+  			}
+       		}
+
+		private void sortnamebtn_Click(object sender, EventArgs e)
+       		{
+            		
+       		}
+
+		private void sortvaluebtn_Click(object sender, EventArgs e)
+       		{
+            		
+       		}
+
+		private void deletebtn_Click(object sender, EventArgs e)
+       		{
+            		resultText.Clear();
+       		}
+
+    }
+}
